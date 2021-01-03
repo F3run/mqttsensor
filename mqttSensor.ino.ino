@@ -19,22 +19,28 @@ const char* HAIO_KEY = MQTT_KEY;
 DHT dht(DHTPIN, DHTTYPE);
 
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
-WiFiClient client;
+//WiFiClient client;
 // or... use WiFiFlientSecure for SSL
-//WiFiClientSecure client;
+WiFiClientSecure client;
 
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
 Adafruit_MQTT_Client mqtt(&client, HAIO_SERVER, HAIO_SERVERPORT, HAIO_USERNAME, HAIO_KEY);
 
+// io.adafruit.com SHA1 fingerprint
+static const char *fingerprint PROGMEM = "59 3C 48 0A B1 8B 39 4E 0D 58 50 47 9A 13 55 60 CC A0 1D AF";
+
 // Setup a feed called 'temp' and 'fukt' for publishing.
 // Notice MQTT paths for AIO follow the form: <username>/feeds/<feedname>
-Adafruit_MQTT_Publish temp = Adafruit_MQTT_Publish(&mqtt, "eiendom/hus/kneloft/temp");
-Adafruit_MQTT_Publish fukt = Adafruit_MQTT_Publish(&mqtt, "eiendom/hus/kneloft/fukt");
+Adafruit_MQTT_Publish temp = Adafruit_MQTT_Publish(&mqtt, MQTT_USERNAME "/feeds/husp-garasje-temp");
+Adafruit_MQTT_Publish fukt = Adafruit_MQTT_Publish(&mqtt, MQTT_USERNAME "/feeds/husp-garasje-fukt");
+//Adafruit_MQTT_Publish testfeed = Adafruit_MQTT_Publish(&mqtt, MQTT_USERNAME "/feeds/testfeed");
 
 void setup(void){
   Serial.begin(115200);
   dht.begin();
   Serial.println(""); 
+  // check the fingerprint of io.adafruit.com's SSL cert
+  client.setFingerprint(fingerprint);
 }
 
 void loop(void){
@@ -69,6 +75,12 @@ void loop(void){
     Serial.println(F("OK!"));
     Serial.println(h);
   }
+//  if (! testfeed.publish(t)) {
+//    Serial.println(F("Failed"));
+//  } else {
+//    Serial.println(F("OK!"));
+//    Serial.println(h);
+//  }
 
 //sleep wifi
 //WiFi.mode(WIFI_OFF);
