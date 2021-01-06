@@ -15,7 +15,8 @@ const char* HAIO_USERNAME = MQTT_USERNAME;
 const char* HAIO_KEY = MQTT_KEY;
 
 #define DHTPIN 2
-#define DHTTYPE DHT11
+//#define DHTTYPE DHT11
+#define DHTTYPE DHT22
 DHT dht(DHTPIN, DHTTYPE);
 
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
